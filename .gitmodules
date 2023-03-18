@@ -1,0 +1,3 @@
+[submodule "scripts/taunt"]
+	path = scripts/taunt
+	url = https://github.com/NamesAreHard6600/Taunt-Library
