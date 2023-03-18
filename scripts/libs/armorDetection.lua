@@ -76,14 +76,14 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
-local modApiExt = require(scriptPath .."modApiExt/modApiExt")
+local modApiExt = modapiext --EDITED FOR AE
 
 local this = {}
 
 -- returns a string with suffixes "_A", "_B", "_AB" pruned.
 local function GetBaseWeapon(weapon)
 	assert(type(weapon) == 'string')
-	
+
 	if modApi:stringEndsWith(weapon, "_AB") then
 		return string.sub(weapon, 1, -4)
 	elseif
@@ -92,14 +92,14 @@ local function GetBaseWeapon(weapon)
 	then
 		return string.sub(weapon, 1, -3)
 	end
-	
+
 	return weapon
 end
 
 -- returns an array of size 2 with upgrade booleans.
 local function GetWeaponUpgrades(weapon)
 	assert(type(weapon) == 'string')
-	
+
 	if modApi:stringEndsWith(weapon, "_AB") then
 		return {true, true}
 	elseif modApi:stringEndsWith(weapon, "_A") then
@@ -107,7 +107,7 @@ local function GetWeaponUpgrades(weapon)
 	elseif modApi:stringEndsWith(weapon, "_B") then
 		return {false, true}
 	end
-	
+
 	return {false, false}
 end
 
@@ -115,7 +115,7 @@ end
 local function IsPassive(weapon, passive)
 	assert(type(weapon) == 'string')
 	assert(type(passive) == 'string')
-	
+
 	return _G[weapon].Passive == passive
 end
 
@@ -125,16 +125,16 @@ end
 -- Can check if the player has a passive with IsPassiveSkill(passive).
 function this.HasPoweredPassive(pawn, passive)
 	assert(type(passive) == 'string')
-	
+
 	local ptable = modApiExt.pawn:getSavedataTable(pawn:GetId())
 	local weapons = {}
 	table.insert(weapons, modApiExt.pawn:getWeaponData(ptable, "primary"))
 	table.insert(weapons, modApiExt.pawn:getWeaponData(ptable, "secondary"))
-	
+
 	for _, v in ipairs(weapons) do
 		if v.id and (#v.power == 0 or v.power[1] > 0) then
 			local suffix = ""
-			
+
 			if v.upgrade1[1] > 0 then
 				if v.upgrade2[1] > 0 then
 					suffix = "_AB"
@@ -144,41 +144,41 @@ function this.HasPoweredPassive(pawn, passive)
 			elseif v.upgrade2[1] > 0 then
 				suffix = "_B"
 			end
-			
+
 			if IsPassive(v.id .. suffix, passive) then
 				return true
 			end
 		end
 	end
-	
+
 	return false
 end
 
 -- returns true if 'pawn' has 'weapon' with upgrades powered.
 function this.HasPoweredWeapon(pawn, weapon)
 	assert(type(weapon) == 'string')
-	
+
 	local ptable = modApiExt.pawn:getSavedataTable(pawn:GetId())
 	local weapons = {}
 	table.insert(weapons, modApiExt.pawn:getWeaponData(ptable, "primary"))
 	table.insert(weapons, modApiExt.pawn:getWeaponData(ptable, "secondary"))
-	
+
 	local weaponBase = GetBaseWeapon(weapon)
 	local upgrades = GetWeaponUpgrades(weapon)
 	for _, v in ipairs(weapons) do
 		if v.id == weaponBase and (#v.power == 0 or v.power[1] > 0) then
 			local powered = true
-			
+
 			for i, u in ipairs(upgrades) do
 				if u and v['upgrade'.. i][1] == 0 then
 					powered = false
 				end
 			end
-			
+
 			return powered
 		end
 	end
-	
+
 	return false
 end
 
@@ -197,7 +197,7 @@ function this.IsArmorPsion()
 	if IsTestMechScenario() then
 		return false
 	end
-	
+
 	-- even if the player has Leader == LEADER_ARMOR, Vek gains armor.
 	-- so look through all pawns, not just TEAM_ENEMY
 	pawns = extract_table(Board:GetPawns(TEAM_ANY))
@@ -226,14 +226,14 @@ end
 -- (even if inflicted with A.C.I.D)
 function this.IsArmor(pawn)
 	return	_G[pawn:GetType()]:GetArmor()
-		
+
 		or	pawn:IsAbility("Armored")
-		
+
 		or	(pawn:IsEnemy()					and
 			not this.IsBot(pawn)			and
 			not this.IsPsion(pawn)			and
 			this.IsArmorPsion())
-			
+
 		or	(pawn:IsMech()					and
 			IsPassiveSkill("Psion_Leech")	and
 			this.IsArmorPsion())

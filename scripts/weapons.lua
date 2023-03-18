@@ -3,6 +3,7 @@ local path = mod_loader.mods[modApi.currentMod].resourcePath
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
+local taunt = require(scriptPath.."taunt/taunt")
 --taunt = require(scriptPath.."taunt/taunt")
 
 
@@ -44,21 +45,21 @@ function Huge_Artillery:GetTargetArea(point)
 	local mission = GetCurrentMission()
 	local myid = Pawn:GetId()
 	local center = point
-	
+
 	local ret = PointList()
 	local mission = GetCurrentMission()
-	
-	
+
+
 	for i = DIR_START, DIR_END do
 		for k = 2, 8 do
 			local curr = DIR_VECTORS[i]*k + point
-			if Board:IsValid(curr) then 
+			if Board:IsValid(curr) then
 			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				ret:push_back(DIR_VECTORS[i]*k + point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosion stuff, bounce, etc. Check Ranged_Rocket in weapons_ranged
@@ -67,15 +68,15 @@ function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosi
 	local ret = SkillEffect()
 	local direction = GetDirection(p2 - p1)
 	local target = p2
-	
+
 	-- Self Damage
 	local damage = SpaceDamage(p1, self.SelfDamage)
 	ret:AddDamage(damage)
-	
+
 	-- Damage
 	local damage = SpaceDamage(p2, self.Damage)
 	ret:AddArtillery(damage, self.Missle)
-	
+
 	return ret
 end
 
@@ -87,14 +88,14 @@ Piercing_Screech = Skill:new{
 	LaserArt = "effects/laser_push",
 	Rarity = 3, --Change
 	Explosion = "",
-	LaunchSound = "/weapons/push_beam", 
-	Damage = 1, 
+	LaunchSound = "/weapons/push_beam",
+	Damage = 1,
 	PathSize = 10,
 	PowerCost = 1,
 	Upgrades = 0,
 	--UpgradeList = {Sheild Self, },
 	--UpgradeCost = {2, 3},
-	
+
 	--Custom Variables
 	TipImage = {
 		Unit = Point(2,3),
@@ -111,7 +112,7 @@ function Piercing_Screech:GetTargetArea(point)
 	local mission = GetCurrentMission()
 	local id = Pawn:GetId()
 	ret:push_back(point)
-	
+
 	for i = DIR_START, DIR_END do
 		for k = 1, 8 do
 			local curr = DIR_VECTORS[i]*k + point
@@ -124,11 +125,11 @@ function Piercing_Screech:GetTargetArea(point)
 		end
 	end
 	return ret
-	
-	
+
+
 end
 
-function Piercing_Screech:GetSkillEffect(p1, p2) 
+function Piercing_Screech:GetSkillEffect(p1, p2)
 	local mission = GetCurrentMission()
 	local damage
 	local ret = SkillEffect()
@@ -147,7 +148,7 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-	
+
 	--[[
 	local pawn = Board:GetPawn(p2)
 	if pawn then
@@ -173,9 +174,9 @@ Support_Weapon = Skill:new {
 	Upgrades = 0,
 	--UpgradeCost = {1,2},
 	--UpgradeList {"Exploding Heal","+1 damage"}
-	
+
 	--Custom Variables
-	
+
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(3,2),
@@ -190,11 +191,11 @@ function Support_Weapon:GetTargetArea(point)
 	local mission = GetCurrentMission()
 	local myid = Pawn:GetId()
 	local center = point
-	
+
 	local ret = PointList()
 	local mission = GetCurrentMission()
-	
-	
+
+
 	for i = DIR_START, DIR_END do
 		for k = 1, 8 do
 			local curr = DIR_VECTORS[i]*k + point
@@ -206,15 +207,15 @@ function Support_Weapon:GetTargetArea(point)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
 function Support_Weapon:GetSkillEffect(p1,p2)
-	local ret = SkillEffect()	
+	local ret = SkillEffect()
 	local mission = GetCurrentMission()
 	local myid = Pawn:GetId()
-	
+
 	return ret
 end
 
@@ -228,4 +229,3 @@ Ultra_Plated_Armor = Skill:new { --Passive Still Triggers Death Voice Line
 		Unit = Point(2,3),
 	}
 }
-

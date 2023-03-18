@@ -8,21 +8,8 @@ local function init(self)
 	local resourcePath = mod.resourcePath
 	local scriptPath = mod.scriptPath
 	local options = mod_loader.currentModContent[mod.id].options
-	
-	--ModApiExt
-	if modApiExt then
-		-- modApiExt already defined. This means that the user has the complete
-		-- ModUtils package installed. Use that instead of loading our own one.
-		NAH_TND_ModApiExt = modApiExt
-	else
-		-- modApiExt was not found. Load our inbuilt version
-		local extDir = self.scriptPath.."modApiExt/"
-		NAH_TND_ModApiExt = require(extDir.."modApiExt")
-		NAH_TND_ModApiExt:init(extDir)
-	end
-	if not taunt then
-		taunt = require(scriptPath.."taunt/taunt")
-	end
+
+
 	--Sprites
 	--[[
 	sprites.addMechs(
@@ -63,47 +50,50 @@ local function init(self)
 	)
 	]]--
 	--Palette
-	
+
 	--Nuclear Nightmares Palette for now
 	modApi:addPalette{
 		ID = "TheNeverDying",
 		Name = "The Never Dying",
 		PlateHighlight = {  6, 255,  50}, --{ 35, 248, 255},
-		PlateLight     = {221, 188,  65}, --{219, 204,  86}, 
-		PlateMid       = {159, 128,  62}, --{212, 212,   0}, 
-		PlateDark      = { 74,  64,  53}, --{189, 167,   0}, 
+		PlateLight     = {221, 188,  65}, --{219, 204,  86},
+		PlateMid       = {159, 128,  62}, --{212, 212,   0},
+		PlateDark      = { 74,  64,  53}, --{189, 167,   0},
 		PlateOutline   = { 15,  22,  16}, --{  2,   2,   1},
 		PlateShadow    = { 69,  74,  57}, --{ 16,  17,  16},
-		BodyColor      = {109, 109,  94}, 
-		BodyHighlight  = {152, 153, 131}, 
+		BodyColor      = {109, 109,  94},
+		BodyHighlight  = {152, 153, 131},
 	}
-	
+
 	--Scripts
-	require(self.scriptPath.."LApi/LApi")
 	require(self.scriptPath.."weapons")
 	require(self.scriptPath.."pawns")
 	require(self.scriptPath.."tauntTorrent")
 
+	self.libs = {}
+	self.libs.modApiExt = modapiext
+	NAH_TND_ModApiExt = self.libs.modApiExt
+	self.libs.weaponPreview = require(self.scriptPath.."libs/".."weaponPreview")
+
+
 	--require(self.scriptPath.."animations")
 	--require(self.scriptPath.."hooks")
-	
-	
+
+
 	--Weapon Icons
 	modApi:appendAsset("img/icons/retarget.png", self.resourcePath.."img/icons/retarget.png")
-	
-	
+
+
 	--modApi:addWeaponDrop("Name")
-	
+
 
 end
 local function load(self,options,version)
-	NAH_TND_ModApiExt:load(self, optoins, version)
 	require(self.scriptPath .. "hooks"):load()
-	require(self.scriptPath .."weaponPreview/api"):load()
-	
-	
+
+
 	modApi:addSquadTrue({"The Never Dying", "ScreamMech", "RangedMech", "SupportMech"}, "The Never Dying", "With ultra plated armor, these mechs are capable of sustaining very high damage shots, and attract the shots of vek to support this.",self.resourcePath.."/squadIcon.png")
-	
+
 end
 
 local function metadata()
@@ -112,13 +102,19 @@ end
 
 
 return {
-    id = "NamesAreHard - The Never Dying",
-    name = "The Never Dying",
+  id = "NamesAreHard - The Never Dying",
+  name = "The Never Dying",
 	icon = "modIcon.png",
 	description = "With ultra plated armor, these mechs are capable of sustaining very high damage shots, and attract the shots of vek to support this.",
-    version = "0.0.1",
+	modApiVersion = "2.9.1",
+	gameVersion = "1.2.83",
+	version = "0.1.0",
 	requirements = { "kf_ModUtils" },
-    metadata = metadata,
+	dependencies = {
+		modApiExt = "1.18",
+		memedit = "1.0.2",
+	},
+  metadata = metadata,
 	load = load,
 	init = init
 }

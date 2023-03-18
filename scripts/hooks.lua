@@ -10,6 +10,7 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
+--I may not need armorDetection now that I know how passives work and can just have it be a passive
 local armorDetection = require(scriptPath .."libs/armorDetection")
 
 
@@ -40,22 +41,22 @@ local function resetVariables(mission)
 	for id = 0, 2 do
 		if not Board:GetPawn(id):IsDamaged() then
 			mission.NAH_TND_Max[id] = true
-		else 
+		else
 			mission.NAH_TND_Max[id] = false
 		end
 	end
-end 
+end
 
 
 
 local function pawnDamaged(mission, pawn, damageTaken)
 	if (pawn:IsMech() and PassiveActive() and mission.NAH_TND_Max[pawn:GetId()]) then
-		if (pawn:GetHealth() < 1) then 
+		if (pawn:GetHealth() < 1) then
 			pawn:SetHealth(1)
 			mission.NAH_TND_Max[pawn:GetId()] = false
 		end
 	end
-		
+
 end
 
 
