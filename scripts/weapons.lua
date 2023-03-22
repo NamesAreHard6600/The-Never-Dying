@@ -215,14 +215,20 @@ function Support_Weapon:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local mission = GetCurrentMission()
 	local myid = Pawn:GetId()
-
+	local damage = SpaceDamage(p2,-1)
+	damage.bHideIcon = true
+	ret:AddDamage(damage)
+	damage.sImageMark = "icons/NAH_damage_1_boost.png"
+	damage.iDamage = 2
+	ret:AddDamage(damage)
 	return ret
 end
 
 
 Ultra_Plated_Armor = Skill:new { --Passive Still Triggers Death Voice Line
+	Passive = "NAH_Ultra_Plated_Armor",
 	Name = "Ultra Plated Armor",
-	Description = "If at max health (and not 1), survive any hit with 1 health left, including kill damage.",
+	Description = "If at max health (and not 1), survive non kill damage with 1 health left.",
 	Icon = "weapons/passives/passive_flameimmune.png",
 	PowerCost = 1,
 	TipImage = {

@@ -69,6 +69,7 @@ local function init(self)
 	require(self.scriptPath.."weapons")
 	require(self.scriptPath.."pawns")
 	require(self.scriptPath.."tauntTorrent")
+	require(self.scriptPath.."hooks")
 
 	self.libs = {}
 	self.libs.modApiExt = modapiext
@@ -80,20 +81,22 @@ local function init(self)
 	--require(self.scriptPath.."hooks")
 
 
-	--Weapon Icons
-	modApi:appendAsset("img/icons/retarget.png", self.resourcePath.."img/icons/retarget.png")
-
-
+	--Icons
+	--modApi:appendAsset("img/icons/retarget.png", self.resourcePath.."img/icons/retarget.png")
+	modApi:appendAsset("img/icons/NAH_Protected.png", self.resourcePath.."img/icons/NAH_Protected.png")
+		Location["icons/NAH_Protected.png"] = Point(-11,-5)
+	modApi:appendAsset("img/icons/NAH_Protected_Fail.png", self.resourcePath.."img/icons/NAH_Protected_Fail.png")
+		Location["icons/NAH_Protected_Fail.png"] = Point(-11,-5)
+	modApi:appendAsset("img/icons/NAH_damage_1_boost.png", self.resourcePath.."img/icons/NAH_damage_1_boost.png")
+		Location["icons/NAH_damage_1_boost.png"] = Point(-9,10)
+	modApi:appendAsset("img/icons/NAH_Boost_Protected.png", self.resourcePath.."img/icons/NAH_Boost_Protected.png")
+		Location["icons/NAH_Boost_Protected.png"] = Point(-9,-11)
 	--modApi:addWeaponDrop("Name")
 
 
 end
 local function load(self,options,version)
-	require(self.scriptPath .. "hooks"):load()
-
-
 	modApi:addSquadTrue({"The Never Dying", "ScreamMech", "RangedMech", "SupportMech"}, "The Never Dying", "With ultra plated armor, these mechs are capable of sustaining very high damage shots, and attract the shots of vek to support this.",self.resourcePath.."/squadIcon.png")
-
 end
 
 local function metadata()
