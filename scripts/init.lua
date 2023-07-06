@@ -51,18 +51,17 @@ local function init(self)
 	]]--
 	--Palette
 
-	--Nuclear Nightmares Palette for now
 	modApi:addPalette{
 		ID = "TheNeverDying",
 		Name = "The Never Dying",
-		PlateHighlight = {  6, 255,  50}, --{ 35, 248, 255},
-		PlateLight     = {221, 188,  65}, --{219, 204,  86},
-		PlateMid       = {159, 128,  62}, --{212, 212,   0},
-		PlateDark      = { 74,  64,  53}, --{189, 167,   0},
-		PlateOutline   = { 15,  22,  16}, --{  2,   2,   1},
-		PlateShadow    = { 69,  74,  57}, --{ 16,  17,  16},
-		BodyColor      = {109, 109,  94},
-		BodyHighlight  = {152, 153, 131},
+		PlateHighlight = {0, 142, 255},
+		PlateLight = {5, 215, 0},
+		PlateMid = {38, 150, 5},
+		PlateDark = {17, 77, 53},
+		PlateOutline = {15, 35, 16},
+		PlateShadow = {69, 91, 57},
+		BodyColor = {109, 128, 94},
+		BodyHighlight = {159, 167, 131},
 	}
 
 	--Scripts
@@ -70,7 +69,7 @@ local function init(self)
 	require(self.scriptPath.."pawns")
 	require(self.scriptPath.."tauntTorrent")
 	require(self.scriptPath.."hooks")
-	
+
 	modApi:addWeapon_Texts(require(self.scriptPath.."weapons_text"))
 
 	self.libs = {}
@@ -93,7 +92,7 @@ local function init(self)
 
 end
 local function load(self,options,version)
-	modApi:addSquadTrue({"The Never Dying", "MedicMech", "KamakaziMech", "ScreamMech"}, "The Never Dying", "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",self.resourcePath.."/squadIcon.png")
+	modApi:addSquadTrue({"The Never Dying", "MedicMech", "KamakazeMech", "ScreamMech"}, "The Never Dying", "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",self.resourcePath.."/squadIcon.png")
 end
 
 local function metadata()

@@ -1,0 +1,3 @@
+VERSION BETA.1
+Initial Release
+No art, sounds, or much of anything besides functionality

@@ -5,8 +5,8 @@ local path = mod_loader.mods[modApi.currentMod].scriptPath
 local pawnColor = modApi:getPaletteImageOffset("TheNeverDying")
 --Mechs
 
-KamakaziMech = Pawn:new {
-	Name = "Kamakazi Mech",
+KamakazeMech = Pawn:new {
+	Name = "Kamakaze Mech",
 	Class = "Ranged",
 	Image = "MechArt",
 	ImageOffset = pawnColor,
@@ -19,7 +19,7 @@ KamakaziMech = Pawn:new {
 	Massive = true,
 	Flying = false
 }
-AddPawn("KamakaziMech")
+AddPawn("KamakazeMech")
 
 ScreamMech = Pawn:new {
 	Name = "Scream Mech",
