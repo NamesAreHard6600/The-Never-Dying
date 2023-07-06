@@ -194,7 +194,7 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				pawn = Board:GetPawn(curr)
 				if pawn ~= nil then
-					taunt.addTauntEffectSpace(ret, curr, p2, self.Damage)
+					taunt.addTauntEffectSpace(ret, curr, p2, self.Damage, true)
 				end
 			else
 				break
@@ -352,6 +352,9 @@ function Support_Weapon:GetSkillEffect(p1,p2)
 			local pawn = Board:GetPawn(point)
 			if self.SelectiveHeals and pawn and pawn:GetTeam() == TEAM_ENEMY then
 				heal.iDamage = 0
+			else
+				heal.iFire = EFFECT_REMOVE
+				heal.iAcid = EFFECT_REMOVE
 			end
 			ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
 		end

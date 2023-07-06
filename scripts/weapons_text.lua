@@ -12,13 +12,13 @@ local Weapon_Texts = {
 	Piercing_Screech_Name = "Piercing Screech",
 	Piercing_Screech_Description = "All Vek in the same row or column get taunted towards the mech.",
 	Piercing_Screech_Upgrade1 = "+1 Damage",
-	Piercing_Screech_A_UpgradeDescription = "Deal 1 damage to taunted enemies.",
+	Piercing_Screech_A_UpgradeDescription = "Deal 1 damage to successfully taunted enemies.",
 	Piercing_Screech_Upgrade2 = "Dash",
 	Piercing_Screech_B_UpgradeDescription = "Dash forward within line of sight before taunting.",
 
   --Support Weapon (needs better name)
 	Support_Weapon_Name = "Support Weapon",
-	Support_Weapon_Description = "Shoot projectiles in four directions. One direction damages and pushes while the others heal.",
+	Support_Weapon_Description = "Shoot projectiles in four directions. One direction damages and pushes while the others repair.",
 	Support_Weapon_Upgrade1 = "Selective Healing",
 	Support_Weapon_A_UpgradeDescription = "Healing projectiles only heal allies.",
 	Support_Weapon_Upgrade2 = "+1 Damage/Heal",
