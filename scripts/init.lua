@@ -70,16 +70,13 @@ local function init(self)
 	require(self.scriptPath.."pawns")
 	require(self.scriptPath.."tauntTorrent")
 	require(self.scriptPath.."hooks")
+	
+	modApi:addWeapon_Texts(require(self.scriptPath.."weapons_text"))
 
 	self.libs = {}
 	self.libs.modApiExt = modapiext
 	NAH_TND_ModApiExt = self.libs.modApiExt
 	self.libs.weaponPreview = require(self.scriptPath.."libs/".."weaponPreview")
-
-
-	--require(self.scriptPath.."animations")
-	--require(self.scriptPath.."hooks")
-
 
 	--Icons
 	--modApi:appendAsset("img/icons/retarget.png", self.resourcePath.."img/icons/retarget.png")
@@ -96,7 +93,7 @@ local function init(self)
 
 end
 local function load(self,options,version)
-	modApi:addSquadTrue({"The Never Dying", "ScreamMech", "RangedMech", "SupportMech"}, "The Never Dying", "With ultra plated armor, these mechs are capable of sustaining very high damage shots, and attract the shots of vek to support this.",self.resourcePath.."/squadIcon.png")
+	modApi:addSquadTrue({"The Never Dying", "MedicMech", "KamakaziMech", "ScreamMech"}, "The Never Dying", "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",self.resourcePath.."/squadIcon.png")
 end
 
 local function metadata()
@@ -108,7 +105,7 @@ return {
   id = "NamesAreHard - The Never Dying",
   name = "The Never Dying",
 	icon = "modIcon.png",
-	description = "With ultra plated armor, these mechs are capable of sustaining very high damage shots, and attract the shots of vek to support this.",
+	description = "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",
 	modApiVersion = "2.9.1",
 	gameVersion = "1.2.83",
 	version = "0.1.0",

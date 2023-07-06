@@ -6,16 +6,12 @@ local scriptPath = mod.scriptPath
 local taunt = require(scriptPath.."taunt/taunt")
 --taunt = require(scriptPath.."taunt/taunt")
 
-
-local function IsTipImage()
-	return Board:GetSize() == Point(6,6)
-end
-
-
+--TODO:
+--Sounds
+--Who has passive?
+--Weapon Names
 
 Huge_Artillery = Skill:new{
-	Name = "Huge Artillery",
-	Description = "Launch a massivily damaging shot, at the cost of your own life.",
 	Class = "Ranged",
 	Icon = "weapons/ranged_artillery.png",
 	Rarity = 3, --Change
@@ -26,16 +22,19 @@ Huge_Artillery = Skill:new{
 	SelfDamage = 5,
 	--Push = 1, --Mostly for tooltip, but you could turn it off for some unknown reason
 	PowerCost = 1,
-	Upgrades = 0,
+	Upgrades = 2,
 	Missle = "effects/shotup_guided_missile.png",
-	--UpgradeList = {"+1 tile","+1 tile"},
-	--UpgradeCost = { 2 },
+	--UpgradeList = {"Remove Recoil",}, Other ideas welcome    Death Damage? 3 cores
+	UpgradeCost = { 1, 2 },
 
 	--Custom Variables
+	Recoil = true,
+	BuildingImmune = false,
 
 	TipImage = {
 		Unit = Point(2,3),
 		Enemy = Point(2,1),
+		Enemy2 = Point(3,1),
 		Target = Point(2,1),
 	}
 }
@@ -62,28 +61,59 @@ function Huge_Artillery:GetTargetArea(point)
 
 	return ret
 end
+
 function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosion stuff, bounce, etc. Check Ranged_Rocket in weapons_ranged
 	local mission = GetCurrentMission()
 	local myid = Pawn:GetId()
 	local ret = SkillEffect()
-	local direction = GetDirection(p2 - p1)
+	local dir = GetDirection(p2 - p1)
+	local backdir = GetDirection(p1 - p2)
 	local target = p2
 
 	-- Self Damage
 	local damage = SpaceDamage(p1, self.SelfDamage)
+
+
+	damage.sAnimation = "ExploArt1"
+	if self.Recoil then
+		damage.iPush = backdir
+	end
 	ret:AddDamage(damage)
 
 	-- Damage
 	local damage = SpaceDamage(p2, self.Damage)
+	if self.BuildingImmune and Board:GetTerrain(p2) == TERRAIN_BUILDING then
+		damage = SpaceDamage(p2)
+	else
+		damage.sAnimation = "ExploArt3"
+	end
 	ret:AddArtillery(damage, self.Missle)
+
+	--Push
+	for i=DIR_START, DIR_END do
+		local damage = SpaceDamage(p2+DIR_VECTORS[i],0,i)
+		damage.sAnimation = "airpush_"..i
+		ret:AddDamage(damage)
+	end
 
 	return ret
 end
 
+Huge_Artillery_A = Huge_Artillery:new {
+	BuildingImmune = true,
+}
+
+Huge_Artillery_B = Huge_Artillery:new {
+	Recoil = false,
+}
+
+Huge_Artillery_AB = Huge_Artillery:new {
+	BuildingImmune = true,
+	Recoil = false,
+}
+
 Piercing_Screech = Skill:new{
-	Name = "Piercing Screech",
-	Description = "All Vek in the same row or column get taunted towards the mech.",
-	Class = "Brute",
+	Class = "Science",
 	Icon = "weapons/science_pushbeam.png",
 	LaserArt = "effects/laser_push",
 	Rarity = 3, --Change
@@ -92,17 +122,23 @@ Piercing_Screech = Skill:new{
 	Damage = 1,
 	PathSize = 10,
 	PowerCost = 1,
-	Upgrades = 0,
-	--UpgradeList = {Sheild Self, },
-	--UpgradeCost = {2, 3},
+	Upgrades = 2,
+	--UpgradeList = {Sheild Self, Dash},
+	UpgradeCost = {2,2},
 
 	--Custom Variables
+	Shield = false,
+	Dash = false,
+
+	CustomTipImage = "Piercing_Screech_Tip",
 	TipImage = {
 		Unit = Point(2,3),
-		Enemy = Point(2,2),
-		Enemy2 = Point(2,1),
-		Target = Point(2,1),
-		Enemy3 = Point(2,0),
+		Enemy = Point(2,1),
+		Enemy2 = Point(2,0),
+		Enemy3 = Point(1,2),
+		Target = Point(2,3),
+		Building = Point(1,0),
+		Building2 = Point(3,1),
 		CustomEnemy = "Firefly2", --"Scorpion2",
 	}
 }
@@ -113,35 +149,46 @@ function Piercing_Screech:GetTargetArea(point)
 	local id = Pawn:GetId()
 	ret:push_back(point)
 
-	for i = DIR_START, DIR_END do
-		for k = 1, 8 do
-			local curr = DIR_VECTORS[i]*k + point
-			if Board:IsValid(curr) then
-			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
-				ret:push_back(DIR_VECTORS[i]*k + point)
-			else
-				break
+	if self.Dash then
+		for i = DIR_START, DIR_END do
+			for k = 1, 8 do
+				local curr = DIR_VECTORS[i]*k + point
+				if Board:IsValid(curr) and not Board:IsBlocked(curr, PATH_PROJECTILE) then
+					ret:push_back(DIR_VECTORS[i]*k + point)
+				else
+					break
+				end
 			end
 		end
 	end
+
 	return ret
-
-
 end
 
 function Piercing_Screech:GetSkillEffect(p1, p2)
 	local mission = GetCurrentMission()
-	local damage
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
+
+	if self.Shield then
+		local damage = SpaceDamage(p1)
+		damage.iShield = EFFECT_CREATE
+		ret:AddDamage(damage)
+	end
+
+
+	if self.Dash then
+		ret:AddCharge(Board:GetSimplePath(p1, p2), FULL_DELAY)
+	end
+
 	for i = DIR_START, DIR_END do
 		for k = 1, 8 do
-			local curr = DIR_VECTORS[i]*k + p1
-			if Board:IsValid(curr) then
+			local curr = DIR_VECTORS[i]*k + p2
+			if Board:IsValid(curr) and curr ~= p1 then
 			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				pawn = Board:GetPawn(curr)
 				if pawn ~= nil then
-					taunt.addTauntEffectSpace(ret, curr, p1)
+					taunt.addTauntEffectSpace(ret, curr, p2)
 				end
 			else
 				break
@@ -149,60 +196,122 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 		end
 	end
 
-	--[[
-	local pawn = Board:GetPawn(p2)
-	if pawn then
-		local id = pawn:GetId()
-		-- damage = SpaceDamage(curr,0) --Remove Old Webs
-		taunt.addTauntEffectEnemy(ret, id, p1)
-		-- ret:AddDamage(damage)
+	return ret
+end
+
+Piercing_Screech_A = Piercing_Screech:new {
+	Shield = true,
+	CustomTipImage = "Piercing_Screech_Tip_A",
+}
+
+Piercing_Screech_B = Piercing_Screech:new {
+	Dash = true,
+	CustomTipImage = "Piercing_Screech_Tip_B",
+}
+
+Piercing_Screech_AB = Piercing_Screech:new {
+	Shield = true,
+	Dash = true,
+	CustomTipImage = "Piercing_Screech_Tip_AB",
+}
+
+--Hellish Tip Imaging
+Piercing_Screech_Tip = Piercing_Screech:new {}
+Piercing_Screech_Tip_A = Piercing_Screech_Tip:new {Shield = true,}
+Piercing_Screech_Tip_B = Piercing_Screech_Tip:new {
+	Dash = true,
+	TipImage = {
+		Unit = Point(2,3),
+		Enemy = Point(2,1),
+		Enemy2 = Point(2,0),
+		Enemy3 = Point(1,2),
+		Target = Point(2,2),
+		Building = Point(1,0),
+		Building2 = Point(3,1),
+		CustomEnemy = "Firefly2", --"Scorpion2",
+	},
+}
+Piercing_Screech_Tip_AB = Piercing_Screech_Tip_B:new {Shield = true}
+
+
+function Piercing_Screech_Tip:GetSkillEffect(p1,p2)
+	local ret = SkillEffect()
+	local dir = 2
+
+	Board:GetPawn(Point(2,0)):FireWeapon(Point(1,0),1)
+	Board:GetPawn(Point(2,1)):FireWeapon(Point(3,1),1)
+	Board:GetPawn(Point(1,2)):FireWeapon(Point(1,1),1)
+
+	if self.Shield then
+		local damage = SpaceDamage(p1)
+		damage.iShield = EFFECT_CREATE
+		ret:AddDamage(damage)
 	end
-	]]--
+
+	if self.Dash then
+		ret:AddCharge(Board:GetSimplePath(p1, p2), FULL_DELAY)
+		ret:AddScript("Board:GetPawn(Point(1,2)):SetQueuedTarget(Point(2,2))")
+	end
+
+	ret:AddScript("Board:GetPawn(Point(2,0)):SetQueuedTarget(Point(2,1))")
+	ret:AddScript("Board:GetPawn(Point(2,1)):SetQueuedTarget(Point(2,2))")
+
+	local animation = SpaceDamage(p2)
+	animation.sAnimation = "taunting"
+	ret:AddDamage(animation)
+	animation.sAnimation = "taunted"
+	animation.sImageMark = "combat/icons/tauntIcon_"..tostring(dir)..".png"
+	animation.loc = Point(2,1)
+	ret:AddDamage(animation)
+	animation.loc = Point(2,0)
+	ret:AddDamage(animation)
+	if self.Dash then
+		animation.loc = Point(1,2)
+		animation.sImageMark = "combat/icons/tauntIcon_"..tostring(1)..".png"
+		ret:AddDamage(animation)
+	end
 
 	return ret
 end
 
 
-
 Support_Weapon = Skill:new {
-	Name = "Support Weapon",
-	Description = "Shoot a bullet in two directions. One heals while one pushes and damages.",
 	Icon = "weapons/science_pullmech.png",
-	Class = "Science",
+	Class = "Brute",
 	Rarity = 3,
 	PowerCost = 1,
-	Upgrades = 0,
-	--UpgradeCost = {1,2},
-	--UpgradeList {"Exploding Heal","+1 damage"}
+	Upgrades = 2,
+	UpgradeCost = {1,2}, --Very Cheap Upgrades
+	Damage = 1,
+	Healing = 1,
+	--UpgradeList {"Extra Projectiles","+1 damage/heal"}
 
 	--Custom Variables
+	ExtraShots = false,
+	DamageProjectile = "effects/shot_mechtank",
+	HealProjectile = "effects/shot_tankacid",
 
 	TipImage = {
-		Unit = Point(2,3),
-		Target = Point(3,2),
-		Enemy = Point (2,2),
-		Second_Origin = Point(3,2),
-		Second_Target = Point(3,2),
+		Unit = Point(2,2),
+		Enemy = Point (2,1),
+		Target = Point(2,1),
+		Friendly_Damaged = Point(2,3),
+		Friendly2_Damaged = Point(1,2),
 	}
 }
 
 function Support_Weapon:GetTargetArea(point)
 	local ret = PointList()
-	local mission = GetCurrentMission()
-	local myid = Pawn:GetId()
-	local center = point
-
-	local ret = PointList()
-	local mission = GetCurrentMission()
-
 
 	for i = DIR_START, DIR_END do
 		for k = 1, 8 do
 			local curr = DIR_VECTORS[i]*k + point
-			if Board:IsValid(curr) and Board:GetTerrain(curr) ~= TERRAIN_MOUNTAIN then --And some other stuff, I'll fix it later
-			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
-				ret:push_back(DIR_VECTORS[i]*k + point)
+			if Board:IsValid(curr) and not Board:IsBlocked(curr, PATH_PROJECTILE) then
+				ret:push_back(curr)
 			else
+				if Board:IsValid(curr) then
+					ret:push_back(curr)
+				end
 				break
 			end
 		end
@@ -213,25 +322,81 @@ end
 
 function Support_Weapon:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	local mission = GetCurrentMission()
-	local myid = Pawn:GetId()
-	local damage = SpaceDamage(p2,-1)
-	damage.bHideIcon = true
-	ret:AddDamage(damage)
-	damage.sImageMark = "icons/NAH_damage_1_boost.png"
-	damage.iDamage = 2
-	ret:AddDamage(damage)
+	local dir = GetDirection(p2-p1)
+	local backdir = GetDirection(p1-p2)
+	local target = GetProjectileEnd(p1,p2)
+	local heals = {GetProjectileEnd(p1,p1+DIR_VECTORS[backdir])}
+
+	if self.ExtraShots then
+		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir+1)%4]))
+		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir-1)%4]))
+	end
+
+	local damage = SpaceDamage(target,self.Damage,dir)
+	ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
+
+	for _, point in ipairs(heals) do
+		local heal = SpaceDamage(point,-self.Healing)
+		ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
+	end
+
 	return ret
 end
 
+Support_Weapon_A = Support_Weapon:new {
+	ExtraShots = true,
+}
 
-Ultra_Plated_Armor = Skill:new { --Passive Still Triggers Death Voice Line
+Support_Weapon_B = Support_Weapon:new {
+	Damage = 2,
+	Healing = 2,
+}
+
+Support_Weapon_AB = Support_Weapon:new {
+	ExtraShots = true,
+	Damage = 2,
+	Healing = 2,
+}
+
+
+Ultra_Plated_Armor = PassiveSkill:new {
 	Passive = "NAH_Ultra_Plated_Armor",
-	Name = "Ultra Plated Armor",
-	Description = "If at max health (and not 1), survive non kill damage with 1 health left.",
 	Icon = "weapons/passives/passive_flameimmune.png",
 	PowerCost = 1,
+	Upgrades = 1,
+	UpgradeCost = {3},
+	--UpgradesList = {"Shield"}, Add a shield after almost dying
+	--Provide a shield after avoiding death.
+	Shield = false,
 	TipImage = {
-		Unit = Point(2,3),
+		Unit = Point(2,2),
+		Enemy = Point(2,1),
+		Target = Point(2,2),
 	}
 }
+
+Ultra_Plated_Armor_A = Ultra_Plated_Armor:new {
+	Passive = "NAH_Ultra_Plated_Armor_A",
+	Shield = true,
+	--Make sure hooks check the proper upgrades
+}
+
+function Ultra_Plated_Armor:GetSkillEffect(p1,p2)
+	local ret = SkillEffect()
+	local pawn = Board:GetPawn(p1)
+	local id = pawn:GetId()
+	local max_health = 2
+	pawn:SetMaxHealth(2)
+
+	local damage = SpaceDamage(p1,3)
+	damage.sImageMark = "icons/NAH_Protected.png"
+	ret:AddMelee(Point(2,1),damage)
+	--ret:AddDelay(0.0167)
+
+	ret:AddScript(string.format([[
+		local pawn = Board:GetPawn(%s)
+		pawn:SetMaxHealth(%s)
+		pawn:SetHealth(1)
+	]],tostring(id),tostring(max_health)))
+	return ret
+end

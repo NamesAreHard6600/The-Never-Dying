@@ -5,8 +5,8 @@ local path = mod_loader.mods[modApi.currentMod].scriptPath
 local pawnColor = modApi:getPaletteImageOffset("TheNeverDying")
 --Mechs
 
-RangedMech = Pawn:new {
-	Name = "Ranged Mech",
+KamakaziMech = Pawn:new {
+	Name = "Kamakazi Mech",
 	Class = "Ranged",
 	Image = "MechArt",
 	ImageOffset = pawnColor,
@@ -19,11 +19,11 @@ RangedMech = Pawn:new {
 	Massive = true,
 	Flying = false
 }
-AddPawn("Prime/Range Mech")
+AddPawn("KamakaziMech")
 
 ScreamMech = Pawn:new {
 	Name = "Scream Mech",
-	Class = "Brute",
+	Class = "Science",
 	Image = "MechScience",
 	ImageOffset = pawnColor,
 	Health = 2,
@@ -35,11 +35,11 @@ ScreamMech = Pawn:new {
 	Massive = true,
 	Flying = true
 }
-AddPawn("Scream Mech")
+AddPawn("ScreamMech")
 
-SupportMech = Pawn:new {
-	Name = "Support Mech",
-	Class = "Science",
+MedicMech = Pawn:new {
+	Name = "Medic Mech",
+	Class = "Brute",
 	Image = "MechMirror",
 	ImageOffset = pawnColor,
 	Health = 2,
@@ -51,5 +51,4 @@ SupportMech = Pawn:new {
 	SoundLocation = "/mech/science/science_mech/",
 	Flying = false
 }
-AddPawn("Support Mech")
-
+AddPawn("SupportMech")
