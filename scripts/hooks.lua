@@ -19,7 +19,7 @@ local function HOOK_SkillBuild(mission, attackingPawn, weaponId, p1, p2, skillEf
 					boost = true
         end
 				local attackedPawn = Board:GetPawn(damage.loc)
-        if attackedPawn and attackedPawn:IsMech() and not attackedPawn:IsDamaged() and attackedPawn:GetMaxHealth() ~= 1 and Board:IsDeadly(damage,attackedPawn) then
+        if attackedPawn and attackedPawn:IsMech() and not attackedPawn:IsDamaged() and attackedPawn:GetMaxHealth() ~= 1 and Board:IsDeadly(damage,attackedPawn) and not attackedPawn:IsShield() then
           damage.sScript = string.format([[
             local pawn = Board:GetPawn(%s);
 						local mission = GetCurrentMission()
