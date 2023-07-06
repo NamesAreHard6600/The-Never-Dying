@@ -107,7 +107,7 @@ return {
 	description = "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",
 	modApiVersion = "2.9.1",
 	gameVersion = "1.2.83",
-	version = "0.1.0",
+	version = "0.2.0",
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.18",

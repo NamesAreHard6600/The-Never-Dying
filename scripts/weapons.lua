@@ -8,8 +8,8 @@ local taunt = require(scriptPath.."taunt/taunt")
 
 --TODO:
 --Sounds
---Who has passive?
 --Weapon Names
+--Support Weapon needs major animation work
 
 Huge_Artillery = Skill:new{
 	Class = "Ranged",
@@ -22,13 +22,14 @@ Huge_Artillery = Skill:new{
 	SelfDamage = 5,
 	--Push = 1, --Mostly for tooltip, but you could turn it off for some unknown reason
 	PowerCost = 1,
-	Upgrades = 2,
+	Upgrades = 1,
 	Missle = "effects/shotup_guided_missile.png",
 	--UpgradeList = {"Remove Recoil",}, Other ideas welcome    Death Damage? 3 cores
-	UpgradeCost = { 1, 2 },
+	UpgradeCost = { 2 },
 
 	--Custom Variables
 	Recoil = true,
+	RecoilProtection = false,
 	BuildingImmune = false,
 
 	TipImage = {
@@ -36,6 +37,7 @@ Huge_Artillery = Skill:new{
 		Enemy = Point(2,1),
 		Enemy2 = Point(3,1),
 		Target = Point(2,1),
+		Mountain = Point(2,4),
 	}
 }
 
@@ -72,8 +74,6 @@ function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosi
 
 	-- Self Damage
 	local damage = SpaceDamage(p1, self.SelfDamage)
-
-
 	damage.sAnimation = "ExploArt1"
 	if self.Recoil then
 		damage.iPush = backdir
@@ -96,21 +96,27 @@ function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosi
 		ret:AddDamage(damage)
 	end
 
+	--ISSUE: Shield??
+	if self.RecoilProtection and Board:IsBlocked(p1+DIR_VECTORS[backdir],PATH_PROJECTILE) then
+		damage = SpaceDamage(p1,-1)
+		ret:AddDamage(damage)
+	end
+
 	return ret
 end
 
 Huge_Artillery_A = Huge_Artillery:new {
-	BuildingImmune = true,
+	RecoilProtection = true,
 }
 
-Huge_Artillery_B = Huge_Artillery:new {
-	Recoil = false,
-}
+--Huge_Artillery_B = Huge_Artillery:new {
+--	Recoil = false,
+--}
 
-Huge_Artillery_AB = Huge_Artillery:new {
-	BuildingImmune = true,
-	Recoil = false,
-}
+--Huge_Artillery_AB = Huge_Artillery:new {
+--	BuildingImmune = true,
+--	Recoil = false,
+--}
 
 Piercing_Screech = Skill:new{
 	Class = "Science",
@@ -119,7 +125,7 @@ Piercing_Screech = Skill:new{
 	Rarity = 3, --Change
 	Explosion = "",
 	LaunchSound = "/weapons/push_beam",
-	Damage = 1,
+	Damage = 0,
 	PathSize = 10,
 	PowerCost = 1,
 	Upgrades = 2,
@@ -188,7 +194,7 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				pawn = Board:GetPawn(curr)
 				if pawn ~= nil then
-					taunt.addTauntEffectSpace(ret, curr, p2)
+					taunt.addTauntEffectSpace(ret, curr, p2, self.Damage)
 				end
 			else
 				break
@@ -200,7 +206,7 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 end
 
 Piercing_Screech_A = Piercing_Screech:new {
-	Shield = true,
+	Damage = 1,
 	CustomTipImage = "Piercing_Screech_Tip_A",
 }
 
@@ -210,14 +216,14 @@ Piercing_Screech_B = Piercing_Screech:new {
 }
 
 Piercing_Screech_AB = Piercing_Screech:new {
-	Shield = true,
+	Damage = 1,
 	Dash = true,
 	CustomTipImage = "Piercing_Screech_Tip_AB",
 }
 
 --Hellish Tip Imaging
 Piercing_Screech_Tip = Piercing_Screech:new {}
-Piercing_Screech_Tip_A = Piercing_Screech_Tip:new {Shield = true,}
+Piercing_Screech_Tip_A = Piercing_Screech_Tip:new {Damage = 1,}
 Piercing_Screech_Tip_B = Piercing_Screech_Tip:new {
 	Dash = true,
 	TipImage = {
@@ -231,7 +237,7 @@ Piercing_Screech_Tip_B = Piercing_Screech_Tip:new {
 		CustomEnemy = "Firefly2", --"Scorpion2",
 	},
 }
-Piercing_Screech_Tip_AB = Piercing_Screech_Tip_B:new {Shield = true}
+Piercing_Screech_Tip_AB = Piercing_Screech_Tip_B:new {Damage = 1,}
 
 
 function Piercing_Screech_Tip:GetSkillEffect(p1,p2)
@@ -260,14 +266,15 @@ function Piercing_Screech_Tip:GetSkillEffect(p1,p2)
 	animation.sAnimation = "taunting"
 	ret:AddDamage(animation)
 	animation.sAnimation = "taunted"
-	animation.sImageMark = "combat/icons/tauntIcon_"..tostring(dir)..".png"
+	animation.sImageMark = "combat/icons/tauntIcon_"..tostring(dir).."_d.png"
 	animation.loc = Point(2,1)
+	animation.iDamage = self.Damage
 	ret:AddDamage(animation)
 	animation.loc = Point(2,0)
 	ret:AddDamage(animation)
 	if self.Dash then
 		animation.loc = Point(1,2)
-		animation.sImageMark = "combat/icons/tauntIcon_"..tostring(1)..".png"
+		animation.sImageMark = "combat/icons/tauntIcon_"..tostring(1).."_d.png"
 		ret:AddDamage(animation)
 	end
 
@@ -287,7 +294,7 @@ Support_Weapon = Skill:new {
 	--UpgradeList {"Extra Projectiles","+1 damage/heal"}
 
 	--Custom Variables
-	ExtraShots = false,
+	SelectiveHeals = false,
 	DamageProjectile = "effects/shot_mechtank",
 	HealProjectile = "effects/shot_tankacid",
 
@@ -296,7 +303,7 @@ Support_Weapon = Skill:new {
 		Enemy = Point (2,1),
 		Target = Point(2,1),
 		Friendly_Damaged = Point(2,3),
-		Friendly2_Damaged = Point(1,2),
+		Enemy2_Damaged = Point(1,2),
 	}
 }
 
@@ -325,26 +332,36 @@ function Support_Weapon:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2-p1)
 	local backdir = GetDirection(p1-p2)
 	local target = GetProjectileEnd(p1,p2)
-	local heals = {GetProjectileEnd(p1,p1+DIR_VECTORS[backdir])}
-
+	local heals = {
+		GetProjectileEnd(p1,p1+DIR_VECTORS[backdir]),
+		GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir+1)%4]),
+		GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir-1)%4])
+	}
+	--[[
 	if self.ExtraShots then
 		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir+1)%4]))
 		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir-1)%4]))
-	end
+	end]]--
 
 	local damage = SpaceDamage(target,self.Damage,dir)
 	ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
 
 	for _, point in ipairs(heals) do
-		local heal = SpaceDamage(point,-self.Healing)
-		ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
+		if point ~= p1 then
+			local heal = SpaceDamage(point,-self.Healing)
+			local pawn = Board:GetPawn(point)
+			if self.SelectiveHeals and pawn and pawn:GetTeam() == TEAM_ENEMY then
+				heal.iDamage = 0
+			end
+			ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
+		end
 	end
 
 	return ret
 end
 
 Support_Weapon_A = Support_Weapon:new {
-	ExtraShots = true,
+	SelectiveHeals = true,
 }
 
 Support_Weapon_B = Support_Weapon:new {
@@ -353,7 +370,7 @@ Support_Weapon_B = Support_Weapon:new {
 }
 
 Support_Weapon_AB = Support_Weapon:new {
-	ExtraShots = true,
+	SelectiveHeals = true,
 	Damage = 2,
 	Healing = 2,
 }

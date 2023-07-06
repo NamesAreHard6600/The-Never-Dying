@@ -12,12 +12,12 @@ KamakazeMech = Pawn:new {
 	ImageOffset = pawnColor,
 	Health = 2,
 	MoveSpeed = 4,
-	SkillList = {"Huge_Artillery"},
+	SkillList = {"Huge_Artillery", "Ultra_Plated_Armor"},
 	DefaultTeam = TEAM_PLAYER,
 	ImpactMaterial = IMPACT_METAL,
 	SoundLocation = "/mech/prime/punch_mech/",
 	Massive = true,
-	Flying = false
+	Armor = true,
 }
 AddPawn("KamakazeMech")
 
@@ -33,7 +33,8 @@ ScreamMech = Pawn:new {
 	ImpactMaterial = IMPACT_METAL,
 	SoundLocation = "/mech/prime/laser_mech/",
 	Massive = true,
-	Flying = true
+	Flying = true,
+	Armor = true,
 }
 AddPawn("ScreamMech")
 
@@ -44,11 +45,11 @@ MedicMech = Pawn:new {
 	ImageOffset = pawnColor,
 	Health = 2,
 	MoveSpeed = 4,
-	SkillList = {"Support_Weapon", "Ultra_Plated_Armor"},
+	SkillList = {"Support_Weapon"},
 	DefaultTeam = TEAM_PLAYER,
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 	SoundLocation = "/mech/science/science_mech/",
-	Flying = false
+	Armor = true,
 }
 AddPawn("SupportMech")
