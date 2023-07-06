@@ -1,7 +1,7 @@
 # The-Never-Dying
 A Into the Breach Squad mod by NamesAreHard
 
-Version: BETA.1
+Version: BETA.3
 
 With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.
 

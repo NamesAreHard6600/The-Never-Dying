@@ -1,3 +1,11 @@
 VERSION BETA.1
 Initial Release
 No art, sounds, or much of anything besides functionality
+
+VERSION BETA.2
+Initial round of balancing
+
+VERSION BETA.3
+Fix Networked Shielding bug
+Update Taunt to only do damage if successfully taunted
+Add Repair effect to the heal to remove status effects
