@@ -14,12 +14,18 @@ local function HOOK_SkillBuild(mission, attackingPawn, weaponId, p1, p2, skillEf
 			for i = 1, effect:size() do
 				local damage = effect:index(i)
 				local boost = false
-        if attackingPawn and attackingPawn:IsBoosted() then
+        if attackingPawn and attackingPawn:IsBoosted() and damage.iDamage ~= DAMAGE_DEATH then
 					damage.iDamage = damage.iDamage + 1
 					boost = true
         end
 				local attackedPawn = Board:GetPawn(damage.loc)
-        if attackedPawn and attackedPawn:IsMech() and not attackedPawn:IsDamaged() and attackedPawn:GetMaxHealth() ~= 1 and Board:IsDeadly(damage,attackedPawn) and not attackedPawn:IsShield() then
+        if attackedPawn and --A pawn is being attacked
+        attackedPawn:IsMech() and --That pawn is a mech
+        not attackedPawn:IsDamaged() and --That pawn is at full health
+        attackedPawn:GetMaxHealth() ~= 1 and --Full health isn't 1 health
+        Board:IsDeadly(damage,attackedPawn) and --The damage is going to kill them
+        not attackedPawn:IsShield() and --They don't have shield (networked shiedling gets passed IsDeadly)
+        damage.iDamage ~= DAMAGE_DEATH then --It's not death damage
           damage.sScript = string.format([[
             local pawn = Board:GetPawn(%s);
 						local mission = GetCurrentMission()
