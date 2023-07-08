@@ -96,8 +96,9 @@ function Huge_Artillery:GetSkillEffect(p1, p2) --Make this look pretty : Explosi
 		ret:AddDamage(damage)
 	end
 
-	--ISSUE: Shield??
-	if self.RecoilProtection and Board:IsBlocked(p1+DIR_VECTORS[backdir],PATH_PROJECTILE) then
+	--ISSUE: Shield?? I'm not sure what this comment means
+	local recoilSpace = p1+DIR_VECTORS[backdir]
+	if self.RecoilProtection and Board:IsValid(recoilSpace) and Board:IsBlocked(recoilSpace,PATH_PROJECTILE) then
 		damage = SpaceDamage(p1,-1)
 		ret:AddDamage(damage)
 	end
@@ -418,5 +419,12 @@ function Ultra_Plated_Armor:GetSkillEffect(p1,p2)
 		pawn:SetMaxHealth(%s)
 		pawn:SetHealth(1)
 	]],tostring(id),tostring(max_health)))
+
+	if self.Shield then
+		local damage = SpaceDamage(p1)
+		damage.iShield = EFFECT_CREATE
+		ret:AddDamage(damage)
+	end
+
 	return ret
 end
