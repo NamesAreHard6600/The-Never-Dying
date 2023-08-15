@@ -11,9 +11,15 @@ local taunt = require(scriptPath.."taunt/taunt")
 --Weapon Names
 --Support Weapon needs major animation work
 
+modApi:appendAsset("img/weapons/brute_multi_shot.png", resourcePath.."img/weapons/brute_multi_shot.png")
+modApi:appendAsset("img/weapons/passive_ultra_plated_armor.png", resourcePath.."img/weapons/passive_ultra_plated_armor.png")
+modApi:appendAsset("img/weapons/ranged_huge_artillery.png", resourcePath.."img/weapons/ranged_huge_artillery.png")
+modApi:appendAsset("img/weapons/science_piercing_screech.png", resourcePath.."img/weapons/science_piercing_screech.png")
+
+
 Huge_Artillery = Skill:new{
 	Class = "Ranged",
-	Icon = "weapons/ranged_artillery.png",
+	Icon = "weapons/ranged_huge_artillery.png",
 	Rarity = 3, --Change
 	Explosion = "",
 	LaunchSound = "/weapons/artillery_volley", --Change
@@ -121,7 +127,7 @@ Huge_Artillery_A = Huge_Artillery:new {
 
 Piercing_Screech = Skill:new{
 	Class = "Science",
-	Icon = "weapons/science_pushbeam.png",
+	Icon = "weapons/science_piercing_screech.png",
 	LaserArt = "effects/laser_push",
 	Rarity = 3, --Change
 	Explosion = "",
@@ -284,7 +290,7 @@ end
 
 
 Support_Weapon = Skill:new {
-	Icon = "weapons/science_pullmech.png",
+	Icon = "weapons/brute_multi_shot.png",
 	Class = "Brute",
 	Rarity = 3,
 	PowerCost = 1,
@@ -382,7 +388,7 @@ Support_Weapon_AB = Support_Weapon:new {
 
 Ultra_Plated_Armor = PassiveSkill:new {
 	Passive = "NAH_Ultra_Plated_Armor",
-	Icon = "weapons/passives/passive_flameimmune.png",
+	Icon = "weapons/passive_ultra_plated_armor.png",
 	PowerCost = 1,
 	Upgrades = 1,
 	UpgradeCost = {3},

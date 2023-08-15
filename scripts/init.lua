@@ -11,44 +11,35 @@ local function init(self)
 
 
 	--Sprites
-	--[[
 	sprites.addMechs(
 		{
-			Name = "nuclear_box",
-			Default = {PosX = -11, PosY = 7},
-			Death = {PosX = -11, PosY = 7, NumFrames = 1, Loop = false},
-			Animated = {PosX = -11, PosY = 7},
+			Name = "Medic_Mech",
+			Default = {PosX = -15, PosY = 0},
+			Broken = {PosX = -15, PosY = 0, NumFrames = 1, Loop = true},
+			Animated = {PosX = -15, PosY = 0, NumFrames = 4},
+			Submerged = {PosX = -15, PosY = 16},
+			SubmergedBroken = {PosX = -15, PosY = 13},
 			Icon = {},
 		},
 		{
-			Name = "Nuclear_Mech",
-			Default = {PosX = -17, PosY = -6},
-			Broken = {PosX = -17, PosY = -6, NumFrames = 1, Loop = true},
-			Animated = {PosX = -17, PosY = -6, NumFrames = 4},
-			Submerged = {PosX = -17, PosY = 10},
-			SubmergedBroken = {PosX = -17, PosY = 7},
+			Name = "Kamikaze_Mech",
+			Default = {PosX = -17, PosY = -4},
+			Broken = {PosX = -17, PosY = -4, NumFrames = 1, Loop = true},
+			Animated = {PosX = -17, PosY = -4, NumFrames = 4},
+			Submerged = {PosX = -16, PosY = 1},
+			SubmergedBroken = {PosX = -16, PosY = 1},
 			Icon = {},
 		},
 		{
-			Name = "Overload_Mech",
-			Default = {PosX = -19, PosY = -6},
-			Broken = {PosX = -19, PosY = -6, NumFrames = 1, Loop = true},
-			Animated = {PosX = -19, PosY = -6, NumFrames = 4},
-			Submerged = {PosX = -18, PosY = -1, NumFrames = 4},
-			SubmergedBroken = {PosX = -18, PosY = -1},
-			Icon = {},
-		},
-		{
-			Name = "Recharge_Mech",
-			Default = {PosX = -14, PosY = -15},
-			Broken = {PosX = -17, PosY = -16, NumFrames = 1, Loop = true},
-			Animated = {PosX = -14, PosY = -15, NumFrames = 8},
-			Submerged = {PosX = -14, PosY = -1}, --Unused, cause flying, but I still need it
-			SubmergedBroken = {PosX = -17, PosY = -12},
+			Name = "Scream_Mech",
+			Default = {PosX = -15, PosY = -1},
+			Broken = {PosX = -18, PosY = -2, NumFrames = 1, Loop = true},
+			Animated = {PosX = -15, PosY = -1, NumFrames = 4},
+			Submerged = {PosX = -15, PosY = 13}, --Unused, cause flying, but I still need it
+			SubmergedBroken = {PosX = -18, PosY = 2},
 			Icon = {},
 		}
 	)
-	]]--
 	--Palette
 
 	modApi:addPalette{
@@ -69,6 +60,7 @@ local function init(self)
 	require(self.scriptPath.."pawns")
 	require(self.scriptPath.."tauntTorrent")
 	require(self.scriptPath.."hooks")
+	require(self.scriptPath.."achievements")
 
 	modApi:addWeapon_Texts(require(self.scriptPath.."weapons_text"))
 
@@ -92,7 +84,7 @@ local function init(self)
 
 end
 local function load(self,options,version)
-	modApi:addSquadTrue({"The Never Dying", "MedicMech", "KamakazeMech", "ScreamMech"}, "The Never Dying", "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",self.resourcePath.."/squadIcon.png")
+	modApi:addSquadTrue({"The Never Dying", "MedicMech", "KamikazeMech", "ScreamMech", id = "NAH_TheNeverDying"}, "The Never Dying", "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",self.resourcePath.."/squadIcon.png")
 end
 
 local function metadata()
@@ -104,7 +96,7 @@ return {
   id = "NamesAreHard - The Never Dying",
   name = "The Never Dying",
 	icon = "modIcon.png",
-	description = "With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, allowing for powered up weapons.",
+	description = "Scrapped together by loose pieces found around Archive, these mechs have fortified hulls from all the metal strapped on to them. With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, powering up their weapons to the next level.",
 	modApiVersion = "2.9.1",
 	gameVersion = "1.2.83",
 	version = "0.3.0",

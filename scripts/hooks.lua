@@ -40,6 +40,11 @@ local function HOOK_SkillBuild(mission, attackingPawn, weaponId, p1, p2, skillEf
                 Board:SetShield(pawn:GetSpace(),true)
               end
             end)
+
+            if not modApi.achievements:isComplete("NamesAreHard - The Never Dying", "NAH_TND_PreventDeath") then
+              mission.NAH_TND_PreventDeathReset = mission.NAH_TND_PreventDeathReset + 1
+              modApi.achievements:addProgress("NamesAreHard - The Never Dying", "NAH_TND_PreventDeath", 1)
+            end
           ]],damage.loc:GetString())
           damage.sImageMark = "icons/NAH_Protected.png"
         end
