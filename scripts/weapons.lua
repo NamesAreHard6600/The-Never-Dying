@@ -180,8 +180,11 @@ end
 
 function Piercing_Screech:GetSkillEffect(p1, p2)
 	local mission = GetCurrentMission()
+	local self_pawn = Board:GetPawn(p1)
+
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
+	local taunts = 0
 
 	if self.Shield then
 		local damage = SpaceDamage(p1)
@@ -201,12 +204,19 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 			--if Board:IsValid(curr) and not Board:IsBlocked(curr, Pawn:GetPathProf()) then
 				pawn = Board:GetPawn(curr)
 				if pawn ~= nil then
-					taunt.addTauntEffectSpace(ret, curr, p2, self.Damage, true)
+					taunted = taunt.addTauntEffectSpace(ret, curr, p2, self.Damage, true)
+					if taunted then
+						taunts = taunts + 1 -- achievement
+					end
 				end
 			else
 				break
 			end
 		end
+	end
+
+	if taunts >= 3 then -- achievement
+		mission.NAH_TND_AfterHim_Pawn = self_pawn:GetId()
 	end
 
 	return ret
