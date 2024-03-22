@@ -1,5 +1,6 @@
 local mod = modApi:getCurrentMod()
 local modid = "NamesAreHard - The Never Dying"
+local squadid = "NAH_TheNeverDying"
 local path = mod_loader.mods[modApi.currentMod].resourcePath
 
 --[[ Images
@@ -32,7 +33,7 @@ local achievements = {
 		name = "Cheating Death",
 		tip = "Prevent the death of a Mech 7 times in a single mission.\nPrevented $ Deaths", -- 6?
 		image = path.."img/achievements/NAH_TND_PreventDeath.png",
-		squad = "NAH_TheNeverDying",
+		squad = squadid,
 		objective = 7, -- Putting the objective here is a bit more complicated, but allows to show the number in the text
 	},
 	NAH_AfterHim = modApi.achievements:add{
@@ -40,7 +41,7 @@ local achievements = {
 		name = "After Him!",
 		tip = "Successfully taunt 3 or more enemies with Piercing Screech and live.", -- 4?
 		image = path.."img/achievements/NAH_TND_AfterHim.png",
-		squad = "NAH_TheNeverDying",
+		squad = squadid,
 		objective = 1, -- I could technically provide more feedback on this one but it's a lot of work
 	},
 	NAH_Immortal = modApi.achievements:add{
@@ -48,7 +49,7 @@ local achievements = {
 		name = "Immortal: Part 2",
 		tip = "Finish 4 Corporate Islands without a Mech being destroyed at the end of a battle.\nValid: $valid\nIslands Finished: $islands",
 		image = path.."img/achievements/NAH_TND_Immortal.png",
-		squad = "NAH_TheNeverDying",
+		squad = squadid,
 		objective = {
 			islands = 4,
 			valid = true,
@@ -86,7 +87,7 @@ end
 local function AchIsValid(achid)
 	return true
 	 and not modApi.achievements:isComplete(modid,achid)
-	 and GAME.squadTitles["TipTitle_"..GameData.ach_info.squad] == "The Never Dying"
+	 and GAME.additionalSquadData.squad == squadid
 	 and isMissionBoard()
 end
 
@@ -111,10 +112,6 @@ local function HOOK_MissionStart(mission)
 	if AchIsValid("NAH_TND_PreventDeath") then
 		ResetPreventDeathVars()
 	end
-end
-
-local function HOOK_NextPhase(_, nextMission)
-	Hook_MissionStart(nextMission)
 end
 
 local function HOOK_MissionEnd(mission)
@@ -167,7 +164,7 @@ end
 
 local function HOOK_GameStart()
 	if not modApi.achievements:isComplete(modid,"NAH_TND_Immortal") then
-		if GAME.squadTitles["TipTitle_"..GameData.ach_info.squad] == "The Never Dying" then
+		if GAME.additionalSquadData.squad == squadid then
 			achievements.NAH_Immortal:setProgress({islands=0, valid=true})
 		else
 			achievements.NAH_Immortal:setProgress({islands=0, valid=false})
@@ -178,7 +175,6 @@ end
 
 local function EVENT_onModsLoaded()
 	modApi:addMissionStartHook(HOOK_MissionStart)
-	modApi:addMissionNextPhaseCreatedHook(HOOK_NextPhase)
 	modApi:addMissionEndHook(HOOK_MissionEnd)
 	modApi:addNextTurnHook(HOOK_TurnStart)
 	modApi:addPostStartGameHook(HOOK_GameStart)

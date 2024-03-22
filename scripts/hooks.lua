@@ -47,6 +47,7 @@ local function HOOK_SkillBuild(mission, attackingPawn, weaponId, p1, p2, skillEf
             end
           ]],damage.loc:GetString())
           damage.sImageMark = "icons/NAH_Protected.png"
+          damage.sAnimation = "NAH_Protected_Anim"
         end
         if boost then
           damage.iDamage = damage.iDamage - 1

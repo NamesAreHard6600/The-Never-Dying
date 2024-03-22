@@ -50,6 +50,6 @@ MedicMech = Pawn:new {
 	ImpactMaterial = IMPACT_METAL,
 	Massive = true,
 	SoundLocation = "/mech/science/science_mech/",
-	Armor = true,
+	--Armor = true,
 }
 AddPawn("SupportMech")

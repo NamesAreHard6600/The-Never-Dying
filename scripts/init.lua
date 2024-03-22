@@ -14,32 +14,42 @@ local function init(self)
 	sprites.addMechs(
 		{
 			Name = "Medic_Mech",
-			Default = {PosX = -15, PosY = 0},
-			Broken = {PosX = -15, PosY = 0, NumFrames = 1, Loop = true},
-			Animated = {PosX = -15, PosY = 0, NumFrames = 4},
-			Submerged = {PosX = -15, PosY = 16},
-			SubmergedBroken = {PosX = -15, PosY = 13},
+			Default = {PosX = -22, PosY = -5},
+			Broken = {PosX = -22, PosY = -5, NumFrames = 1, Loop = true},
+			Animated = {PosX = -22, PosY = -5, NumFrames = 4},
+			Submerged = {PosX = -22, PosY = 2},
+			SubmergedBroken = {PosX = -22, PosY = 10},
 			Icon = {},
 		},
 		{
 			Name = "Kamikaze_Mech",
-			Default = {PosX = -17, PosY = -4},
-			Broken = {PosX = -17, PosY = -4, NumFrames = 1, Loop = true},
-			Animated = {PosX = -17, PosY = -4, NumFrames = 4},
-			Submerged = {PosX = -16, PosY = 1},
-			SubmergedBroken = {PosX = -16, PosY = 1},
+			Default = {PosX = -21, PosY = -14},
+			Broken = {PosX = -21, PosY = -14, NumFrames = 1, Loop = true},
+			Animated = {PosX = -21, PosY = -14, NumFrames = 4},
+			Submerged = {PosX = -21, PosY = -6},
+			SubmergedBroken = {PosX = -21, PosY = -8},
 			Icon = {},
 		},
 		{
 			Name = "Scream_Mech",
-			Default = {PosX = -15, PosY = -1},
-			Broken = {PosX = -18, PosY = -2, NumFrames = 1, Loop = true},
-			Animated = {PosX = -15, PosY = -1, NumFrames = 4},
+			Default = {PosX = -22, PosY = -3},
+			Broken = {PosX = -22, PosY = -3, NumFrames = 1, Loop = true},
+			Animated = {PosX = -22, PosY = -3, NumFrames = 4},
 			Submerged = {PosX = -15, PosY = 13}, --Unused, cause flying, but I still need it
-			SubmergedBroken = {PosX = -18, PosY = 2},
+			SubmergedBroken = {PosX = -20, PosY = -2},
 			Icon = {},
 		}
 	)
+
+	--Spiny Boys
+	modApi:appendAsset("img/units/player/Medic_Mech_Spin.png", self.resourcePath.."img/units/player/Medic_Mech_Spin.png")
+	ANIMS.Medic_Mech_Spin = ANIMS.MechUnit:new{ Image = "units/player/Medic_Mech.png", PosX = -22, PosY = -5 }
+	ANIMS.Medic_Mech_Spina = ANIMS.MechUnit:new{ Image = "units/player/Medic_Mech_Spin.png", PosX = -22, PosY = -5, NumFrames = 8, Time=.08}
+	--MechPunch1w =		MechUnit:new{ Image = "units/player/mech_punch_1w.png", PosX = -17, PosY = 10 }
+	--MechPunch1_broken = 	MechUnit:new{ Image = "units/player/mech_punch_1_broken.png", PosX = -17, PosY = -1 }
+	--MechPunch1w_broken = 	MechUnit:new{ Image = "units/player/mech_punch_1w_broken.png", PosX = -17, PosY = 10 }
+	--MechPunch1_ns = 	MechIcon:new{ Image = "units/player/mech_punch_1_ns.png" }
+
 	--Palette
 
 	modApi:addPalette{
@@ -61,6 +71,7 @@ local function init(self)
 	require(self.scriptPath.."tauntTorrent")
 	require(self.scriptPath.."hooks")
 	require(self.scriptPath.."achievements")
+	require(self.scriptPath.."animations")
 
 	modApi:addWeapon_Texts(require(self.scriptPath.."weapons_text"))
 

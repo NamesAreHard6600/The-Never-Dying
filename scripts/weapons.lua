@@ -10,6 +10,7 @@ local taunt = require(scriptPath.."taunt/taunt")
 --Sounds
 --Weapon Names
 --Support Weapon needs major animation work
+--All Animations
 
 modApi:appendAsset("img/weapons/brute_multi_shot.png", resourcePath.."img/weapons/brute_multi_shot.png")
 modApi:appendAsset("img/weapons/passive_ultra_plated_armor.png", resourcePath.."img/weapons/passive_ultra_plated_armor.png")
@@ -346,35 +347,48 @@ end
 
 function Support_Weapon:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	local dir = GetDirection(p2-p1)
-	local backdir = GetDirection(p1-p2)
-	local target = GetProjectileEnd(p1,p2)
-	local heals = {
-		GetProjectileEnd(p1,p1+DIR_VECTORS[backdir]),
-		GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir+1)%4]),
-		GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir-1)%4])
-	}
-	--[[
-	if self.ExtraShots then
-		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir+1)%4]))
-		table.insert(heals,GetProjectileEnd(p1,p1+DIR_VECTORS[(backdir-1)%4]))
-	end]]--
+	local damage_dir = GetDirection(p2-p1)
+	local dirs = {1,2,3,0} --The order the directions need to go in
+	local pawn = Board:GetPawn(p1)
 
-	local damage = SpaceDamage(target,self.Damage,dir)
-	ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
+	--local damage = SpaceDamage(target,self.Damage,dir)
+	--ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
 
-	for _, point in ipairs(heals) do
-		if point ~= p1 then
-			local heal = SpaceDamage(point,-self.Healing)
-			local pawn = Board:GetPawn(point)
-			if self.SelectiveHeals and pawn and pawn:GetTeam() == TEAM_ENEMY then
-				heal.iDamage = 0
+	if pawn:GetType() == "MedicMech" then
+		ret:AddScript(string.format([[
+			local pawn = Board:GetPawn(%s)
+			pawn:SetCustomAnim("Medic_Mech_Spin")
+		]], pawn:GetId()))
+	end
+
+	for _, dir in ipairs(dirs) do
+		local target = GetProjectileEnd(p1,p1+DIR_VECTORS[dir])
+		if target ~= p1 then
+			if dir == damage_dir then
+				local damage = SpaceDamage(target,self.Damage,dir)
+				damage.sAnimation = "ExploAir1"
+				ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
 			else
-				heal.iFire = EFFECT_REMOVE
-				heal.iAcid = EFFECT_REMOVE
+				local heal = SpaceDamage(target,-self.Healing)
+				local pawn = Board:GetPawn(target)
+				if self.SelectiveHeals and pawn and pawn:GetTeam() == TEAM_ENEMY then
+					heal.iDamage = 0
+				else
+					heal.iFire = EFFECT_REMOVE
+					heal.iAcid = EFFECT_REMOVE
+				end
+				heal.sAnimation = "ExploFirefly2"
+				ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
 			end
-			ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
 		end
+		ret:AddDelay(.08*2) --Equal to the time it takes for the custom anim to move twice
+	end
+
+	if pawn:GetType() == "MedicMech" then
+		ret:AddScript(string.format([[
+			local pawn = Board:GetPawn(%s)
+			pawn:SetCustomAnim("Medic_Mech")
+		]], pawn:GetId()))
 	end
 
 	return ret
