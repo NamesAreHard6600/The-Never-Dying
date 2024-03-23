@@ -24,6 +24,7 @@ Huge_Artillery = Skill:new{
 	Rarity = 3, --Change
 	Explosion = "",
 	LaunchSound = "/weapons/artillery_volley", --Change
+	ImpactSound = "/impact/generic/explosion_large",
 	PathSize = 1,
 	Damage = 4, -- Tooltip
 	SelfDamage = 5,
@@ -132,7 +133,9 @@ Piercing_Screech = Skill:new{
 	LaserArt = "effects/laser_push",
 	Rarity = 3, --Change
 	Explosion = "",
-	LaunchSound = "/weapons/push_beam",
+	LaunchSound = "ui/battle/psion_attack",
+	--LaunchSound = "/props/train_move",
+	--LaunchSound = "/weapons/push_beam",
 	Damage = 0,
 	PathSize = 10,
 	PowerCost = 1,
@@ -309,6 +312,8 @@ Support_Weapon = Skill:new {
 	UpgradeCost = {1,2}, --Very Cheap Upgrades
 	Damage = 1,
 	Healing = 1,
+	ImpactSound = "/impact/dynamic/enemy_projectile",
+	--LaunchSound = "/weapons/modified_cannons", --Multiple launches, so commented out
 	--UpgradeList {"Extra Projectiles","+1 damage/heal"}
 
 	--Custom Variables
@@ -367,6 +372,7 @@ function Support_Weapon:GetSkillEffect(p1,p2)
 			if dir == damage_dir then
 				local damage = SpaceDamage(target,self.Damage,dir)
 				damage.sAnimation = "ExploAir1"
+				ret:AddSound("/weapons/modified_cannons")
 				ret:AddProjectile(damage,self.DamageProjectile,NO_DELAY)
 			else
 				local heal = SpaceDamage(target,-self.Healing)
@@ -378,6 +384,7 @@ function Support_Weapon:GetSkillEffect(p1,p2)
 					heal.iAcid = EFFECT_REMOVE
 				end
 				heal.sAnimation = "ExploFirefly2"
+				ret:AddSound("/weapons/acid_shot")
 				ret:AddProjectile(heal,self.HealProjectile,NO_DELAY)
 			end
 		end
