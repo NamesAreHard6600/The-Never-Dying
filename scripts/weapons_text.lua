@@ -17,8 +17,8 @@ local Weapon_Texts = {
 	Piercing_Screech_B_UpgradeDescription = "Dash forward within line of sight before taunting.",
 
   --Support Weapon (needs better name)
-	Support_Weapon_Name = "Support Weapon",
-	Support_Weapon_Description = "Shoot projectiles in four directions. One direction damages and pushes while the others repair.",
+	Support_Weapon_Name = "Adaptive Swivel",
+	Support_Weapon_Description = "Shoot projectiles in four directions. One direction damages and pushes while the others heal.",
 	Support_Weapon_Upgrade1 = "Selective Healing",
 	Support_Weapon_A_UpgradeDescription = "Healing projectiles only heal allies.",
 	Support_Weapon_Upgrade2 = "+1 Damage/Heal",
