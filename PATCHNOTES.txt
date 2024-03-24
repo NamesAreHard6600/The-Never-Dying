@@ -9,3 +9,12 @@ VERSION BETA.3
 Fix Networked Shielding bug
 Update Taunt to only do damage if successfully taunted
 Add Repair effect to the heal to remove status effects
+
+VERSION BETA.4
+Fixed Some Bugs
+Achievements
+
+VERSION 1.0.0
+A lot of art
+A lot of sounds
+I don't know probably some other stuff too but who reads these anyway?
