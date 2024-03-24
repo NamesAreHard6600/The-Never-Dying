@@ -17,7 +17,7 @@ KamikazeMech = Pawn:new {
 	ImpactMaterial = IMPACT_METAL,
 	SoundLocation = "/mech/prime/punch_mech/",
 	Massive = true,
-	Armor = true,
+	--Armor = true,
 }
 AddPawn("KamikazeMech")
 

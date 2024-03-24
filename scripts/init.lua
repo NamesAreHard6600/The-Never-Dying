@@ -108,9 +108,9 @@ return {
   name = "The Never Dying",
 	icon = "modIcon.png",
 	description = "Scrapped together by loose pieces found around Archive, these mechs have fortified hulls from all the metal strapped on to them. With their Ultra Plated Armor, these mechs are capable of sustaining very high damage shots, powering up their weapons to the next level.",
-	modApiVersion = "2.9.1",
+	modApiVersion = "2.9.3",
 	gameVersion = "1.2.83",
-	version = "0.3.0",
+	version = "1.0.0",
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.18",

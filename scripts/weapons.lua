@@ -133,7 +133,7 @@ Piercing_Screech = Skill:new{
 	LaserArt = "effects/laser_push",
 	Rarity = 3, --Change
 	Explosion = "",
-	LaunchSound = "ui/battle/psion_attack",
+	--LaunchSound = "ui/battle/psion_attack", In Weapon
 	--LaunchSound = "/props/train_move",
 	--LaunchSound = "/weapons/push_beam",
 	Damage = 0,
@@ -197,9 +197,12 @@ function Piercing_Screech:GetSkillEffect(p1, p2)
 	end
 
 
-	if self.Dash then
+	if self.Dash and p1 ~= p2 then
+		ret:AddSound("/weapons/charge")
 		ret:AddCharge(Board:GetSimplePath(p1, p2), FULL_DELAY)
 	end
+
+	ret:AddSound("ui/battle/psion_attack") --Launch sound, after dash
 
 	for i = DIR_START, DIR_END do
 		for k = 1, 8 do
